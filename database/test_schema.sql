@@ -346,6 +346,7 @@ CREATE TABLE `scores_log` (
   `points` int(11) NOT NULL,
   `level_id` int(11) NOT NULL,
   `type` varchar(4) NOT NULL,
+  `client_ip` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `level_id` (`level_id`),
   KEY `team_id` (`team_id`)
@@ -405,6 +406,7 @@ CREATE TABLE `failures_log` (
   `team_id` int(11) NOT NULL,
   `level_id` int(11) NOT NULL,
   `flag` text NOT NULL,
+  `client_ip` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `team_id` (`team_id`),
   KEY `level_id` (`level_id`)

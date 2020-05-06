@@ -242,12 +242,14 @@
     <column>team_id</column>
     <column>level_id</column>
     <column>flag</column>
+    <column>client_ip</column>
     <row>
       <value>1</value>
       <value>2016-04-24 17:15:23</value>
       <value>1</value>
       <value>1</value>
       <value>flag</value>
+      <value>0.0.0.0</value>
     </row>
     <row>
       <value>2</value>
@@ -255,6 +257,7 @@
       <value>1</value>
       <value>2</value>
       <value>flag 2</value>
+      <value>0.0.0.0</value>
     </row>
   </table>
   <table name="progressive_log">
@@ -319,6 +322,7 @@
     <column>points</column>
     <column>level_id</column>
     <column>type</column>
+    <column>client_ip</column>
     <row>
       <value>1</value>
       <value>2016-04-24 17:15:23</value>
@@ -326,6 +330,7 @@
       <value>10</value>
       <value>2</value>
       <value>flag</value>
+      <value>0.0.0.0</value>
     </row>
     <row>
       <value>2</value>
@@ -334,6 +339,7 @@
       <value>15</value>
       <value>3</value>
       <value>base</value>
+      <value>0.0.0.0</value>
     </row>
   </table>
 </dataset>
