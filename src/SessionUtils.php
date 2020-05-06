@@ -116,14 +116,14 @@ class SessionUtils {
 
   public static function enforceAdmin(): void {
     /* HH_IGNORE_ERROR[2050] */
-    if (!array_key_exists('admin', $_SESSION)) {
+    if (!self::sessionAdmin()) {
       throw new LoginRedirectException();
     }
   }
 
   public static function sessionAdmin(): bool {
     /* HH_IGNORE_ERROR[2050] */
-    return array_key_exists('admin', $_SESSION);
+    return intval(must_have_string($_SESSION, 'admin')) === 1;
   }
 
   public static function sessionTeam(): int {
@@ -134,6 +134,11 @@ class SessionUtils {
   public static function sessionTeamName(): string {
     /* HH_IGNORE_ERROR[2050] */
     return must_have_string($_SESSION, 'name');
+  }
+
+  public static function sessionClientIp(): string {
+    /* HH_IGNORE_ERROR[2050] */
+    return must_have_string($_SESSION, 'IP');
   }
 
   public static function CSRFToken(): string {
