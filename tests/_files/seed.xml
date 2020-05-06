@@ -279,6 +279,7 @@
     <column>created_ts</column>
     <column>last_access_ts</column>
     <column>last_page_access</column>
+    <column>client_ip</column>
     <row>
       <value>1</value>
       <value>cookie</value>
@@ -287,6 +288,7 @@
       <value>2015-04-24 17:15:23</value>
       <value>2016-04-24 17:15:23</value>
       <value>index</value>
+      <value>0.0.0.0</value>
     </row>
   </table>
   <table name="registration_tokens">

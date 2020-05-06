@@ -199,6 +199,7 @@ CREATE TABLE `sessions` (
   `created_ts` timestamp NOT NULL DEFAULT 0,
   `last_access_ts` timestamp NOT NULL,
   `last_page_access` varchar(200) NOT NULL,
+  `client_ip` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `cookie` (`cookie`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;

@@ -15,6 +15,7 @@ class Session extends Model {
     private string $created_ts,
     private string $last_access_ts,
     private string $last_page_access,
+    private string $client_ip,
   ) {}
 
   public function getId(): int {
@@ -45,6 +46,10 @@ class Session extends Model {
     return $this->last_page_access;
   }
 
+  public function getClientIp(): string {
+    return $this->client_ip;
+  }
+
   private static function decodeTeamId(string $data): int {
     // This is a bit janky
     $delim = explode('team_id|', $data)[1];
@@ -52,6 +57,15 @@ class Session extends Model {
     $unserialized = strval(unserialize($serialized));
 
     return intval($unserialized);
+  }
+
+  private static function decodeClientIp(string $data): string {
+    // This is a bit janky too
+    $delim = explode('IP|', $data)[1];
+    $serialized = explode('admin|', $delim)[0];
+    $unserialized = strval(unserialize($serialized));
+
+    return $unserialized;
   }
 
   public static async function genSetTeamId(
@@ -65,10 +79,12 @@ class Session extends Model {
       return;
     }
     $team_id = self::decodeTeamId($data);
+    $client_ip = self::decodeClientIp($data);
     $db = await self::genDb();
     await $db->queryf(
-      'UPDATE sessions SET team_id = %d WHERE cookie = %s LIMIT 1',
+      'UPDATE sessions SET team_id = %d, client_ip = %s WHERE cookie = %s LIMIT 1',
       $team_id,
+      $client_ip,
       $cookie,
     );
   }
@@ -86,6 +102,7 @@ class Session extends Model {
         'mc_result should be of type Session',
       );
       $mc_result->team_id = self::decodeTeamId($data);
+      $mc_result->client_ip = self::decodeClientIp($data);
       self::setMCSession($cookie, $mc_result);
     } else {
       await self::genCreateCacheSession($cookie);
@@ -101,6 +118,7 @@ class Session extends Model {
       must_have_idx($row, 'created_ts'),
       must_have_idx($row, 'last_access_ts'),
       must_have_idx($row, 'last_page_access'),
+      must_have_idx($row, 'client_ip'),
     );
   }
 
@@ -111,10 +129,11 @@ class Session extends Model {
   ): Awaitable<void> {
     $db = await self::genDb();
     await $db->queryf(
-      'INSERT INTO sessions (cookie, data, created_ts, last_access_ts, team_id, last_page_access) VALUES (%s, %s, NOW(), NOW(), 0, %s)',
+      'INSERT INTO sessions (cookie, data, created_ts, last_access_ts, team_id, last_page_access, client_ip) VALUES (%s, %s, NOW(), NOW(), 0, %s, %s)',
       $cookie,
       $data,
       Router::getRequestedPage(),
+      '127.0.0.1',
     );
     if ($data !== '') {
       await self::genCreateCacheSession($cookie);
