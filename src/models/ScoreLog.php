@@ -19,6 +19,7 @@ class ScoreLog extends Model {
     private int $points,
     private int $level_id,
     private string $type,
+    private string $client_ip,
   ) {}
 
   public function getId(): int {
@@ -45,6 +46,10 @@ class ScoreLog extends Model {
     return $this->type;
   }
 
+  public function getClientIp(): string {
+    return $this->client_ip;
+  }
+
   private static function scorelogFromRow(Map<string, string> $row): ScoreLog {
     return new ScoreLog(
       intval(must_have_idx($row, 'id')),
@@ -53,6 +58,7 @@ class ScoreLog extends Model {
       intval(must_have_idx($row, 'points')),
       intval(must_have_idx($row, 'level_id')),
       must_have_idx($row, 'type'),
+      must_have_idx($row, 'client_ip'),
     );
   }
 
@@ -361,15 +367,17 @@ class ScoreLog extends Model {
     int $points,
     string $type,
   ): Awaitable<bool> {
+    $client_ip = SessionUtils::sessionClientIp();
     $db = await self::genDb();
     //'INSERT INTO scores_log (ts, level_id, team_id, points, type) VALUES (NOW(), %d, %d, %d, %s)',
     $result =
       await $db->queryf(
-        'INSERT INTO scores_log (ts, level_id, team_id, points, type) SELECT NOW(), %d, %d, %d, %s FROM DUAL WHERE NOT EXISTS (SELECT * FROM scores_log WHERE level_id = %d AND team_id = %d)',
+        'INSERT INTO scores_log (ts, level_id, team_id, points, type, client_ip) SELECT NOW(), %d, %d, %d, %s, %s FROM DUAL WHERE NOT EXISTS (SELECT * FROM scores_log WHERE level_id = %d AND team_id = %d)',
         $level_id,
         $team_id,
         $points,
         $type,
+        $client_ip,
         $level_id,
         $team_id,
       );

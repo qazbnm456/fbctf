@@ -4043,7 +4043,11 @@ class AdminController extends Controller {
 
         $country = await Country::gen($level->getEntityId()); // TODO: Combine Awaits
 
-        $team_name = $team->getName();
+        $team_name =
+          $team->getName().
+          '('.
+          $gamelog->getClientIp().
+          ')';
 
         $level_str =
           $country->getName().

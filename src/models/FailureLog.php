@@ -7,6 +7,7 @@ class FailureLog extends Model {
     private int $team_id,
     private int $level_id,
     private string $flag,
+    private string $client_ip,
   ) {}
 
   public function getId(): int {
@@ -29,6 +30,10 @@ class FailureLog extends Model {
     return $this->flag;
   }
 
+  public function getClientIp(): string {
+    return $this->client_ip;
+  }
+
   private static function failurelogFromRow(
     Map<string, string> $row,
   ): FailureLog {
@@ -38,6 +43,7 @@ class FailureLog extends Model {
       intval(must_have_idx($row, 'team_id')),
       intval(must_have_idx($row, 'level_id')),
       must_have_idx($row, 'flag'),
+      must_have_idx($row, 'client_ip'),
     );
   }
 
@@ -47,12 +53,14 @@ class FailureLog extends Model {
     int $team_id,
     string $flag,
   ): Awaitable<void> {
+    $client_ip = SessionUtils::sessionClientIp();
     $db = await self::genDb();
     await $db->queryf(
-      'INSERT INTO failures_log (ts, level_id, team_id, flag) VALUES(NOW(), %d, %d, %s)',
+      'INSERT INTO failures_log (ts, level_id, team_id, flag, client_ip) VALUES(NOW(), %d, %d, %s, %s)',
       $level_id,
       $team_id,
       $flag,
+      $client_ip,
     );
   }
 

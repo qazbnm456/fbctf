@@ -52,8 +52,9 @@ function package() {
 }
 
 function install_unison() {
+  package zstd
   cd /
-  dl_pipe "https://www.archlinux.org/packages/extra/x86_64/unison/download/" | sudo tar Jx
+  dl_pipe "https://www.archlinux.org/packages/extra/x86_64/unison/download/" | sudo tar x --use-compress-program=zstd
 }
 
 function repo_osquery() {
@@ -230,8 +231,12 @@ function install_hhvm() {
   package software-properties-common
 
   log "Adding HHVM keys"
-  sudo DEBIAN_FRONTEND=noninteractive apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449
-  sudo DEBIAN_FRONTEND=noninteractive apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94
+#  sudo DEBIAN_FRONTEND=noninteractive apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449
+#  sudo DEBIAN_FRONTEND=noninteractive apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94
+  gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x5a16e7281be7a449
+  gpg -a --export 0x5a16e7281be7a449 | sudo apt-key add -
+  gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB4112585D386EB94
+  gpg -a --export 0xB4112585D386EB94 | sudo apt-key add -
 
   log "Adding HHVM repo"
   sudo DEBIAN_FRONTEND=noninteractive add-apt-repository "deb http://dl.hhvm.com/ubuntu xenial-lts-3.21 main"

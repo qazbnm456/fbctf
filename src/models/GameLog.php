@@ -9,6 +9,7 @@ class GameLog extends Model {
     private int $points,
     private string $type,
     private string $flag,
+    private string $client_ip,
   ) {}
 
   public function getTs(): string {
@@ -39,6 +40,10 @@ class GameLog extends Model {
     return $this->flag;
   }
 
+  public function getClientIp(): string {
+    return $this->client_ip;
+  }
+
   private static function gamelogFromRow(Map<string, string> $row): GameLog {
     return new GameLog(
       must_have_idx($row, 'ts'),
@@ -48,6 +53,7 @@ class GameLog extends Model {
       intval(must_have_idx($row, 'points')),
       must_have_idx($row, 'type'),
       must_have_idx($row, 'flag'),
+      must_have_idx($row, 'client_ip'),
     );
   }
 
@@ -56,7 +62,7 @@ class GameLog extends Model {
     $db = await self::genDb();
     $result =
       await $db->queryf(
-        'SELECT ts, %s AS entry, team_id, level_id, points, type, %s AS flag FROM scores_log UNION SELECT ts, %s AS entry, team_id, level_id, 0 AS points, %s AS type, flag FROM failures_log ORDER BY ts DESC',
+        'SELECT ts, %s AS entry, team_id, level_id, points, type, %s AS flag, client_ip FROM scores_log UNION SELECT ts, %s AS entry, team_id, level_id, 0 AS points, %s AS type, flag, client_ip FROM failures_log ORDER BY ts DESC',
         'score',
         '',
         'failure',

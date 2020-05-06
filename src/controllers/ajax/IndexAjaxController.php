@@ -269,9 +269,7 @@ class IndexAjaxController extends AjaxController {
           'IP',
           must_have_string(Utils::getSERVER(), 'REMOTE_ADDR'),
         );
-        if ($team->getAdmin()) {
-          SessionUtils::sessionSet('admin', strval($team->getAdmin()));
-        }
+        SessionUtils::sessionSet('admin', strval($team->getAdmin()));
       }
       if ($team->getAdmin()) {
         $redirect = 'admin';
